@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "gscopy": {
+      "commandName": "Project",
+      "commandLineArgs": "c:\\enabler4BIZ\\toolsbin\\2024_03_Lebenslauf_Heinrich_Elsigan.docx c:\\enabler4BIZ\\Enabler.Lib.UpdateService\\Documents\\2024_03_Lebenslauf_Heinrich_Elsigan_write_bs.docx write 1024"
+    }
+  }
+}
