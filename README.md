@@ -1,7 +1,6 @@
 # cmdcopy
-## gscopy
 
-## Windows file Date.Created, Date.Modified on File Copy, Move & Write 
+## [gscopy](https://github.com/heinrichelsigan/cmdcopy/releases/download/2024-09-19-CmdCopy-Release-v2.24.919/GsCopy.7z)
 
 ### Usage: gscopy source destination [copy|xcopy|move|write] [blocksize]
 - *gscopy* _source_ _destination_ 
@@ -13,6 +12,7 @@
 - *gscopy* _src_ _dest_ *write* 16384
   [ _read & write 16384 bytes block data (same as dd if=src of=dest bs=16384)_ ]
 
+## Windows file Date.Created, Date.Modified on File Copy, Move & Write 
 
 ### File.Copy
 File.Copy, no matter if made with Windows Explorer, command copy, xcopy or programs, that use File.Copy Windows Api call, creates a new file or overwrites an existing file, where
