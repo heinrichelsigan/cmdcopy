@@ -13,14 +13,18 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Win32.NativeApi
+namespace Microsoft.Win32.Api
 {
 
     /// <summary>
     /// InternalWrapper contains wrapper methods and inner classes for User32, Kernel32 and GDI32 Windows Core API calls
+    /// Thanks to <see href="https://github.com/dotnet" />,    
+    /// <see href="https://pinvoke.net/" />,
+    /// <seealso href="https://stackoverflow.com/" /> and
+    /// <seealso href="https://codeproject.com" />
     /// </summary>
     [SuppressUnmanagedCodeSecurityAttribute]
-    internal static class InternalWrapper
+    internal static class NativeWrapper
     {
 
         #region Constants
@@ -501,7 +505,7 @@ namespace Win32.NativeApi
             internal MemoryStatus()
             {
 #if (CLR2COMPATIBILITY)
-                _length = (uint)Marshal.SizeOf(typeof(InternalWrapper.MemoryStatus));
+                _length = (uint)Marshal.SizeOf(typeof(NativeWrapper.MemoryStatus));
 #else
                 _length = (uint)Marshal.SizeOf<NativeMethods.MemoryStatus>();
 #endif
@@ -569,7 +573,7 @@ namespace Win32.NativeApi
             internal SecurityAttributes()
             {
 #if (CLR2COMPATIBILITY)
-                _nLength = (uint)Marshal.SizeOf(typeof(InternalWrapper.SecurityAttributes));
+                _nLength = (uint)Marshal.SizeOf(typeof(NativeWrapper.SecurityAttributes));
 #else
                 _nLength = (uint)Marshal.SizeOf<NativeMethods.SecurityAttributes>();
 #endif
@@ -937,10 +941,10 @@ namespace Win32.NativeApi
         /// </summary>
         internal static MemoryStatus GetMemoryStatus()
         {
-            if (InternalWrapper.IsWindows)
+            if (NativeWrapper.IsWindows)
             {
                 MemoryStatus status = new MemoryStatus();
-                bool returnValue = InternalWrapper.GlobalMemoryStatusEx(status);
+                bool returnValue = NativeWrapper.GlobalMemoryStatusEx(status);
                 if (!returnValue)
                 {
                     return null;

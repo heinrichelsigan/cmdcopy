@@ -9,8 +9,9 @@
     <StartupObject>gscopy.Program</StartupObject>
     <PackageProjectUrl>https://area23-at.blogspot.com/2024/09/windows-file-datecreated-datemodified.html</PackageProjectUrl>
     <RepositoryUrl>https://github.com/heinrichelsigan/cmdcopy</RepositoryUrl>
-    <AssemblyVersion>2.24.919</AssemblyVersion>
-    <FileVersion>2.24.919</FileVersion>
+    <AssemblyVersion>2.24.920</AssemblyVersion>
+    <FileVersion>2.24.920</FileVersion>
+    <PublishTrimmed>False</PublishTrimmed>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
