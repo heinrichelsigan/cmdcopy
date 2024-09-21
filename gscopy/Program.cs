@@ -1,24 +1,26 @@
 ﻿using System.Reflection;
+using System.IO;
 using Microsoft.Win32.Api;
 using System.Runtime.Intrinsics.X86;
 
 namespace gscopy
 {
     /// <summary>
-    /// gscopy simple console program,
-    /// that demonstrates File.Copy, File.Move, Win32 Api kernel32.dll File.XCopy or File.Write
+    /// gscopy simple console program, that demonstrates 
+    /// File.Copy, File.Move, Win32 Api kernel32.dll File.XCopy or File.Write.
     /// <see cref="NativeWrapper.XCopy(string, string)">xcopy</see> switch uses 
-    /// <seealso cref="https://github.com/heinrichelsigan/cmdcopy/blob/master/gscopy/InternalWrapper.cs">Win32.NativeApi.InternalWrapper</seealso> api.
+    /// <seealso href="https://github.com/heinrichelsigan/cmdcopy/blob/master/gscopy/InternalWrapper.cs">
+    /// Win32.NativeApi.InternalWrapper</seealso> api.
     /// </summary>
     public class Program
     {
-        private static int blckSze = -1;
-        internal static string input = "", output = "", mode = "copy";
-
-        internal static string ProgName { get => Assembly.GetExecutingAssembly().Location; }
+        internal static string ProgName { get => Path.GetFileName(Assembly.GetExecutingAssembly().Location); }
 
         static void Main(string[] args)
         {
+            int blckSze = -1;
+            string input = "", output = "", mode = "copy";
+
             if (args.Length < 2)
                 Usage();
 
@@ -33,10 +35,10 @@ namespace gscopy
                     blckSze = -1; // Cannot parse
 
             if (!File.Exists(input))
-                Usage($"Input file {input} doesn't exist, can't copy!");
+                Usage($"Input file {input} doesn't exist, can't copy!", 1);
 
             if (input.Equals(output, StringComparison.InvariantCultureIgnoreCase))
-                Usage($"Input file {input} equals output {output}");
+                Usage($"Input file {input} equals output {output}", 2);
 
             switch (mode)
             {
@@ -48,44 +50,45 @@ namespace gscopy
             }
         }
 
-        internal static void Usage(string msg = "")
+        internal static void Usage(string msg = "", int exitCode = 0)
         {
-            if (!string.IsNullOrEmpty(input))
+            if (!string.IsNullOrEmpty(msg))
                 Console.Error.WriteLine(msg);
-            
-            Console.Error.Write($"Usage: {ProgName} source destination [copy|write|move] blocksize\r\n");
-            Environment.Exit(System.Environment.ExitCode);
+            Environment.ExitCode = exitCode;
+            Console.Out.Write($"Usage: {ProgName} source destination [copy|write|move] blocksize\r\n");
+            Environment.Exit(Environment.ExitCode);
         }
 
-        internal static void GsWrite(string input, string output, int blocksize = 0)
+        internal static void GsWrite(string inFile, string outFile, int bs = 0)
         {                                            
             int cnt = -1;
-            if (blocksize <= 0)
+            if (bs <= 0)
             {
-                byte[] inBytes = File.ReadAllBytes(input);
-                File.WriteAllBytes(output, inBytes);
+                byte[] inBytes = File.ReadAllBytes(inFile);
+                File.WriteAllBytes(outFile, inBytes);
                 return;
             }
 
-            long inFileLen = (new FileInfo(input)).Length;
-            byte[] byteBuf = new byte[blocksize];
-            using (FileStream inFs = new FileStream(input, FileMode.Open, FileAccess.Read))
+            long inFileLen = (new FileInfo(inFile)).Length;
+            byte[] byteBuf = new byte[bs];
+            using (FileStream inStr = new FileStream(inFile, FileMode.Open, FileAccess.Read))
             {
-                using (FileStream outFs = new FileStream(output, FileMode.OpenOrCreate, FileAccess.Write))
+                using (FileStream outStr = new FileStream(outFile, FileMode.OpenOrCreate, FileAccess.Write))
                 {
-                    if (inFs != null && outFs != null)
+                    if (inStr != null && outStr != null)
                     {
-                        while (blocksize * ++cnt < inFileLen)
+                        while (bs * ++cnt < inFileLen)
                         {
-                            int bRead = inFs.Read(byteBuf, 0, blocksize);
+                            int bRead = inStr.Read(byteBuf, 0, bs);
                             if (bRead > 0)
-                                outFs.Write(byteBuf, 0, bRead);
+                                outStr.Write(byteBuf, 0, bRead);
                         }
 
-                        inFs.Close();
-                        outFs.Flush();
-                        outFs.Close();
-                        Console.WriteLine($"{ProgName}\nread: \t{input}\nwrote: \t{output}\nbytes: \t{inFileLen},\trw-ops:\t{cnt} * {blocksize} blocksize.");
+                        inStr.Close();
+                        outStr.Flush();
+                        outStr.Close();
+                        Console.WriteLine($"{ProgName}\nread: \t{inFile}\nwrote: \t{outFile}\n" +
+                            $"bytes: \t{inFileLen},\trw-ops:\t{cnt} * {bs} blocksize.");
                     }
                 }
             }
